@@ -39,8 +39,8 @@ def inicioSesion():
             db = get_db()
             cur = db.cursor()
 
-            sQuery = "SELECT idUsuario,correo,contrasenia,primerNombre,segundoNombre,Apellidos,numDocumento,telefono,direccion,idTipoUsuario FROM usuario WHERE correo = ?"
-
+            sQuery = "SELECT idUsuario,nombres,apellidos,direccion,telefono,email,contrasenia,idTipoUsuario FROM usuario WHERE email = ?"
+            
             cur.execute(sQuery,[email])
 
             user = cur.fetchone()
@@ -51,22 +51,22 @@ def inicioSesion():
                 error = 'Usuario o contraseña inválidos'
                 flash( error )
             else:
-                print("password", user[2])
-                password_encriptado_encode = user[2]
+                print("password", user[6])
+                password_encriptado_encode = user[6]
 
                 if bcrypt.checkpw(password_encode,password_encriptado_encode):
-                    if user[9] == 1:
+                    if user[7] == 1:
                         session["usuario"] = email 
                         session["nivel"] = "administrador"
-                        return redirect("/admin")
-                    elif user[9] == 2:
+                        return redirect("/superadmin")
+                    elif user[7] == 2:
                         session["usuario"] = email 
                         session["nivel"] = "docente"
-                        return redirect("/docente")
-                    elif user[9] == 3:
+                        return redirect("/admin")
+                    elif user[7] == 3:
                         session["usuario"] = email 
                         session["nivel"] = "estudiante"
-                        return redirect("/estudiante")
+                        return redirect("/colaborador")
             
             return render_template("login.html", form=form)
 
@@ -77,17 +77,17 @@ def inicioSesion():
 
 # Rutas ------     CONTROL ACCESO
 
-@app.route('/admin', methods=["GET",'POST'])
-def irAdmin():
+@app.route('/superadmin', methods=["GET",'POST'])
+def superadmin():
     return render_template("superadmin/main.html")
 
-@app.route('/docente', methods=['GET','POST'])
-def irDocente():
-    return render_template("docente/main.html")
+@app.route('/admin', methods=['GET','POST'])
+def admin():
+    return render_template("administrador/main.html")
 
-@app.route('/estudiante', methods=['GET','POST'])
-def irEstudiante():
-    return render_template("estudiante/main.html")
+@app.route('/colaborador', methods=['GET','POST'])
+def colaborador():
+    return render_template("empleado/main.html")
 
 
 #Rutas -------- Control Formularios
@@ -95,18 +95,18 @@ def irEstudiante():
 def registrarusuarios():
     form = formUsuarios(request.form)
     if (request.method == 'GET'):
-        if 'usuario' in session:
+        # if 'usuario' in session:
             cursor = get_db().cursor()
-            cursor.execute('SELECT idTipoUsuario,nombre FROM tipoUsuario')
+            cursor.execute('SELECT idTipoUsuario,nombre FROM tipoUsuario ORDER BY idTipoUsuario')
             tipoUser = cursor.fetchall()
             cursor.close()
             return render_template("superadmin/registrouser.html", form=form, tipoUser=tipoUser)
-        else:
-            return render_template("superadmin/registrouser.html")
+    # else:
+    #     return render_template("superadmin/registrouser.html")
     else:
         # POST y capturamos los datos del formulario:
-        nombres = request.form['primerNombre'].strip().lower()
-        apellidos = request.form['Apellidos'].strip().lower()
+        nombres = request.form['nombres'].strip().lower()
+        apellidos = request.form['apellidos'].strip().lower()
         direccion = request.form['direccion'].strip().lower()
         telefono = request.form['telefono'].strip().lower()
         correo = request.form['correo'].strip().lower()
@@ -119,7 +119,7 @@ def registrarusuarios():
         tipoUser = request.form['tipoUser']
 
         try:
-            sQuery = "INSERT INTO usuario (nombres,apellidos,direccion,telefono,email,contrasenia,idTipoUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            sQuery = "INSERT INTO usuario (nombres,apellidos,direccion,telefono,email,contrasenia,idTipoUsuario) VALUES (?, ?, ?, ?, ?, ?, ?)"
         
             con = get_db()
             cur = con.cursor()
@@ -129,13 +129,13 @@ def registrarusuarios():
             error = ""
             if cur is None:
                 error = "Error en el registro"
-                flash(error)
+                flash(error,'error')
             else:
                 error ="Exito"
-                flash(error)
-                return redirect("/registrarUsuarios")
+                flash(error, 'success')
+                return redirect("/registrarusuarios")
                 
-            return error
+            # return error
         
         except Error:
             print( Error)

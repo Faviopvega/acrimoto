@@ -10,8 +10,8 @@ class formLogin(FlaskForm):
 
 #CLASES
 class formUsuarios(Form):
-    nombres = StringField('Pimer Nombre', validators=[DataRequired()])
-    apellidos = StringField('Segundo Nombre', validators=[DataRequired()])
+    nombres = StringField('Nombres', validators=[DataRequired()])
+    apellidos = StringField('Apellidos', validators=[DataRequired()])
     direccion = StringField('Direccion', validators=[DataRequired()])
     telefono = StringField('Numero Telefonico', validators=[DataRequired()])
     correo = EmailField("Correo electronico", validators=[DataRequired()])

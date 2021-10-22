@@ -1,64 +1,118 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %} Sistema de Gestion de Notas {% endblock %} 
 
-{% block title %} Sistema de Gestion de Notas {% endblock %}
+{% block head %}
 
+<script type="text/javascript">
+  $(document).ready(function () {
+  window.setTimeout(function() {
+      $(".alert").fadeTo(1000, 0).slideUp(1000, function(){
+          $(this).remove(); 
+      });
+  }, 5000);
+   
+  });
+</script>
+
+{% endblock %}
 
 {% block body %}
+
 <div class="container">
-    <div class="row">
-        <form>
-            <div class="text-center mb-3">
-            <!-- Name input -->
-            <div class="form-outline mb-4">
-              <input type="text" id="registerName" class="form-control" />
-              <label class="form-label" for="registerName">Name</label>
-            </div>
-        
-            <!-- Username input -->
-            <div class="form-outline mb-4">
-              <input type="text" id="registerUsername" class="form-control" />
-              <label class="form-label" for="registerUsername">Username</label>
-            </div>
-        
-            <!-- Email input -->
-            <div class="form-outline mb-4">
-              <input type="email" id="registerEmail" class="form-control" />
-              <label class="form-label" for="registerEmail">Email</label>
-            </div>
-        
-            <!-- Password input -->
-            <div class="form-outline mb-4">
-              <input type="password" id="registerPassword" class="form-control" />
-              <label class="form-label" for="registerPassword">Password</label>
-            </div>
-        
-            <!-- Repeat Password input -->
-            <div class="form-outline mb-4">
-              <input type="password" id="registerRepeatPassword" class="form-control" />
-              <label class="form-label" for="registerRepeatPassword">Repeat password</label>
-            </div>
-        
-            <!-- Checkbox -->
-            <div class="form-check d-flex justify-content-center mb-4">
-              <input
-                class="form-check-input me-2"
-                type="checkbox"
-                value=""
-                id="registerCheck"
-                checked
-                aria-describedby="registerCheckHelpText"
-              />
-              <label class="form-check-label" for="registerCheck">
-                I have read and agree to the terms
-              </label>
-            </div>
+  <div class="row">
+    <section class="vh-100 bg-image">
+      <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+        <div class="container h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+              <div class="card" style="border-radius: 15px">
+                <div class="card-body p-5">
+                  <h2 class="text-uppercase text-center mb-5">Crear Usuario</h2>
+                  <section class="content">
+                    <!-- {% for message in get_flashed_messages() %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                    {% endfor %} -->
+                    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+                    {% if errors %}
+                    <div class="alert alert-danger">
+                      <a class="close" href="#">×</a>
+                      <ul>
+                        {%- for msg in errors %}
+                        <li>{{ msg }}</li>
+                        {% endfor -%}
+                      </ul>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    {% with errors = get_flashed_messages(category_filter=["success"]) %}
+                    {% if errors %}
+                    <div class="alert alert-success">
+                      <a class="close" href="#">×</a>
+                        {%- for msg in errors %}
+                        {{ msg }}
+                        {% endfor -%}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                  </section>
+                  <form action="{{ url_for('registrarusuarios')}}" method="post">
+                    <div class="form-outline mb-4">
+                      {{ form.nombres(class="form-control form-control-lg") }}
+                      {{ form.nombres.label(class="form-label") }}
+                      <!-- <input type="password" id="form3Example4cg" class="form-control form-control-lg" />
+                            <label class="form-label" for="form3Example4cg">Password</label> -->
+                    </div>
+                    <div class="form-outline mb-4">
+                      {{ form.apellidos(class="form-control form-control-lg") }}
+                      {{ form.apellidos.label(class="form-label") }}
+                      <!-- <input type="password" id="form3Example4cdg" class="form-control form-control-lg" />
+                            <label class="form-label" for="form3Example4cdg">Repeat your password</label> -->
+                    </div>
+                    <div class="form-outline mb-4">
+                      {{ form.direccion(class="form-control form-control-lg") }}
+                      {{ form.direccion.label(class="form-label") }}
+                      <!-- <input type="password" id="form3Example4cdg" class="form-control form-control-lg" />
+                          <label class="form-label" for="form3Example4cdg">Repeat your password</label> -->
+                    </div>
+                    <div class="form-outline mb-4">
+                      {{ form.telefono(class="form-control form-control-lg") }}
+                      {{ form.telefono.label(class="form-label") }}
+                      <!-- <input type="password" id="form3Example4cdg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example4cdg">Repeat your password</label> -->
+                    </div>
+                    <div class="form-outline mb-4">
+                      {{ form.correo(class="form-control form-control-lg") }} 
+                      {{ form.correo.label(class="form-label") }}
+                      <!-- <input type="password" id="form3Example4cdg" class="form-control form-control-lg" />
+                          <label class="form-label" for="form3Example4cdg">Repeat your password</label> -->
+                    </div>
+                    <div class="form-outline mb-4">
+                      {{ form.contrasenia(class="form-control form-control-lg")
+                      }} {{ form.contrasenia.label(class="form-label") }}
+                      <!-- <input type="email" id="form3Example3cg" class="form-control form-control-lg" />
+                          <label class="form-label" for="form3Example3cg">Your Email</label> -->
+                    </div>
+                    <div class="form-outline mb-4">
+                      Tipo Usuario<select name="tipoUser" class="form-select">
+                        {% for item in tipoUser %}
+                        <option value="{{item[0]}}">{{item[1]}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
 
-            <div class="col-12">
-                <button type="submit" class="btn btn-dark float-end">Login</button>
+                    <div class="d-flex justify-content-center">
+                      {{ form.registrar(class="btn btn-success btn-block btn-lg
+                      text-body") }}
+                      <!-- <button type="button" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button> -->
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-
-    </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
 
-
-    {% endblock %}
+{% endblock %}

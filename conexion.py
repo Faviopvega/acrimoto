@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 from flask import g
 
-DATABASES = 'db/acrimotobd.db'
+DATABASES = 'db/acrimoto.db'
 
 def get_db():
     try:
