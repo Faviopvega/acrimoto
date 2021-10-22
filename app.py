@@ -22,7 +22,8 @@ def index():
 
 @app.route('/login')
 def login():
-    return render_template("login.html")
+    form = formLogin()
+    return render_template("login.html", form=form)
 
 @app.route('/inicioSesion', methods=['GET','POST'])
 def inicioSesion():
@@ -90,8 +91,8 @@ def irEstudiante():
 
 
 #Rutas -------- Control Formularios
-@app.route('/registrarUsuarios', methods=['GET', 'POST'])
-def registrarUsuarios():
+@app.route('/registrarusuarios', methods=['GET', 'POST'])
+def registrarusuarios():
     form = formUsuarios(request.form)
     if (request.method == 'GET'):
         if 'usuario' in session:
@@ -101,7 +102,7 @@ def registrarUsuarios():
             cursor.close()
             return render_template("superadmin/registrouser.html", form=form, tipoUser=tipoUser)
         else:
-            return redirect("/")
+            return render_template("superadmin/registrouser.html")
     else:
         # POST y capturamos los datos del formulario:
         nombres = request.form['primerNombre'].strip().lower()

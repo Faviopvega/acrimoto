@@ -17,38 +17,51 @@
   padding: 0.75rem 1rem;
 }
 </style>
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-          <div class="card border-0 shadow rounded-3 my-5">
-            <div class="card-body p-4 p-sm-5">
-              <h5 class="card-title text-center mb-5 fw-light fs-5">Inicio Sesión</h5>
-              
-              <form action="{{url_for('inicioSesion')}}" method="post">
-                <div class="form-floating mb-3">
-                  <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                  <label for="floatingInput">Correo Electronico</label>
-                </div>
-                <div class="form-floating mb-3">
-                  <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                  <label for="floatingPassword">Contraseña</label>
-                </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-4 offset-md-4">
+          <div class="login-form bg-light mt-4 p-4">
+              <form action="{{url_for('inicioSesion')}}" method="post" class="row g-3">
+                {{ form.csrf_token() }}
+                  <h4>Bienvenido de Nuevo</h4>
+                  <div class="col-12">
+                      <!-- <label>Username</label>
+                      <input type="text" name="username" class="form-control" placeholder="Username"> -->
+                      {{ form.email.label(class="form-label") }}
+                      {{ form.email(class="form-control", autofocus=true) }}
+                  </div>
+                  <div class="col-12">
+                      <!-- <label>Password</label>
+                      <input type="password" name="password" class="form-control" placeholder="Password"> -->
+                      {{ form.password.label(class="form-label") }}
+
+                      {% if form.password.errors %}
+                          {% for error in form.password.errors %}
+                              <div class="alert alert-danger"> {{ error }}</div>
+                          {% endfor %}
+                      {% endif %}
   
-                <div class="form-check mb-3">
-                  <input class="form-check-input" type="checkbox" value="" id="rememberPasswordCheck">
-                  <label class="form-check-label" for="rememberPasswordCheck">
-                    Politica de Privacidad
-                  </label>
-                </div>
-                <div class="d-grid">
-                  <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Iniciar Sesion</button>
-                </div>
-                <hr class="my-4">
+                      {{ form.password(class="form-control") }}
+                  </div>
+                  <div class="col-12">
+                      <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="rememberMe">
+                          <label class="form-check-label" for="rememberMe"> Recordarme</label>
+                      </div>
+                  </div>
+                  <div class="col-12">
+                      <!-- <button type="submit" class="btn btn-dark float-end">Login</button> -->
+                      {{ form.enviar(class="btn btn-primary") }}
+                  </div>
               </form>
-            </div>
+              <hr class="mt-4">
+              <div class="col-12">
+                  <p class="text-center mb-0">Have not account yet? <a href="#">Signup</a></p>
+              </div>
           </div>
-        </div>
       </div>
-    </div>
+  </div>
+</div>
 
 {% endblock %}
