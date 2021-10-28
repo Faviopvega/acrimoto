@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Sistema de Gestion de Notas {% endblock %}
+{% block title %} Acrimoto Login {% endblock %}
 
 
 {% block body %}
@@ -22,6 +22,11 @@
   <div class="row">
       <div class="col-md-4 offset-md-4">
           <div class="login-form bg-light mt-4 p-4">
+            <section class="content">
+                {% for message in get_flashed_messages() %}
+                <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+              </section>
               <form action="{{url_for('inicioSesion')}}" method="post" class="row g-3">
                 {{ form.csrf_token() }}
                   <h4>Bienvenido de Nuevo</h4>

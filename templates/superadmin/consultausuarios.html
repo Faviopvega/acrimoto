@@ -1,0 +1,50 @@
+{% extends 'base2.html' %}
+
+{% block title %} Sistema de Gestion de Notas {% endblock %}
+
+{% block body %}
+
+<div class="table-responsive">
+<table class="table caption-top">
+    <caption class="">Lista de Usuarios</caption>
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Nombres</th>
+        <th scope="col">Apellidos</th>
+        <th scope="col">Direccion</th>
+        <th scope="col">Telefono</th>
+        <th scope="col">Email</th>
+        <th scope="col">Operacion</th>
+      </tr>
+    </thead>
+    <tbody>
+        
+        {% for user in usuarios %} 
+        <tr>
+            <th scope="row">{{ user[0] }}</th>
+            <td>{{ user[1] }}</td>
+            <td>{{ user.2 }}</td>
+            <td>{{ user.3 }}</td>
+            <td>{{ user.4 }}</td>
+            <td>{{ user.5 }}</td>
+            <td>
+                <a href="/editarusuario/{{ user.0 }}" class="btn btn-success">
+                  Edit
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a href="/eliminarusuario/{{ user.0 }}" class="btn btn-danger btn-delete">Delete</a>
+            </td>
+
+        </tr>
+        {% endfor %}
+      
+    </tbody>
+  </table>
+</div>
+
+
+<script src="{{url_for('static', filename='js/confirmarDelete.js')}}"></script>
+
+
+{% endblock %}

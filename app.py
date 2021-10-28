@@ -91,8 +91,8 @@ def colaborador():
 
 @app.route('/logout', methods=['GET','POST'])
 def logout():
-    session.close()
-    return render_template("/")
+    session.clear()
+    return redirect("/")
 
 #Rutas -------- Control Formularios
 @app.route('/registrarusuarios', methods=['GET', 'POST'])
@@ -143,6 +143,110 @@ def registrarusuarios():
         
         except Error:
             print( Error)
+
+@app.route('/consultausuarios')
+def consultausuarios():
+    db = get_db()
+    cur = db.cursor()
+
+    sQuery = "SELECT * FROM usuario"
+
+    cur.execute(sQuery)
+
+    data = cur.fetchall()
+
+    cur.close()
+    # if (request.method == 'GET'):
+    #     if 'usuario' in session:
+    #         cursor = get_db().cursor()
+    #         cursor.execute('SELECT idTipoUsuario,nombre,descripcion FROM tipoUsuario')
+    #         tipoUser = cursor.fetchall()
+    #         cursor.close()
+    return render_template("superadmin/consultausuarios.html", usuarios = data)
+    #     else:
+    #         return redirect("/")
+    # else:
+
+
+@app.route('/eliminarusuario/<string:id>')
+def eliminarusuario(id):
+    try:
+        db = get_db()
+        cur = db.cursor()
+        sQuery = "DELETE FROM usuario WHERE idUsuario = {0}".format(id)
+        cur.execute(sQuery)
+        flash("Eliminado Satisfactoriamente") # falta incluir mensaje
+        db.commit()
+        cur.close()
+        db = close_db()
+    except Error:
+            print( Error)
+            flash("Se ha detectado un error al intentar eliminar el registro")
+    finally:
+        return redirect(url_for('consultausuarios'))
+
+
+
+@app.route('/editarusuario/<id>', methods=['GET','POST'])
+def editarusuario(id):
+    db = get_db() 
+    cur = db.cursor() 
+
+    sQuery = "SELECT * FROM usuario WHERE idUsuario = ?" 
+    cur.execute(sQuery,[id])
+
+    userEdit = cur.fetchone()
+    cur.close()
+    return render_template("superadmin/editarusuario.html" , usuario = userEdit)
+
+
+@app.route('/updateusuario/<id>', methods = ['POST']) 
+def updateusuario(id):
+
+    if request.method == 'POST':
+        #Captura de datos
+        nombres = request.form['nombres'].strip().lower()
+        apellidos = request.form['apellidos'].strip().lower()
+        direccion = request.form['direccion'].strip().lower()
+        telefono = request.form['telefono'].strip().lower()
+        email = request.form['email'].strip().lower()
+        password = request.form['password'].strip()
+
+        #Encriptar contraseña usando semilla 
+        password_encode = password.encode("utf-8")
+        password_encriptada = bcrypt.hashpw(password_encode,semilla)
+
+        db = get_db() #Abre conexion
+        cur = db.cursor() #Variable que tiene la conexion y cre un objeto de tipo cursor
+
+        sQuery = """UPDATE usuario
+                        SET nombres = ?,
+                            apellidos = ?,
+                            direccion = ?,
+                            telefono = ?,
+                            email = ?,
+                            contrasenia = ?
+                    WHERE idUsuario = ?""" 
+
+        # sentencia SQL
+        cur.execute(sQuery,(nombres,apellidos,direccion,telefono,email,password_encriptada,id)) #Preparamos la sentencia para ejecucion
+        db.commit()
+        cur.close() # cerramos el cursor
+        db = close_db()
+        return redirect(url_for("consultausuarios"))
+
+    else:
+        return redirect(url_for("superadmin"))
+
+# Verificamos que exista una sesion
+@app.before_request
+def antes_de_cada_ruta():
+    ruta = request.path
+    # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
+    if not 'usuario' in session and ruta != "/login" and ruta !="/inicioSesion" and ruta != "/" and ruta != "/logout" and not ruta.startswith("/static"):
+        flash("Inicia sesión para continuar")
+        return redirect("/login")
+    # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
         
 if  __name__ == "__main__":
     os.environ['FLASK_ENV'] = 'development'

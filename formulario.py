@@ -10,7 +10,7 @@ class formLogin(FlaskForm):
 
 #CLASES
 class formUsuarios(Form):
-    nombres = StringField('Nombres', validators=[DataRequired()])
+    nombres = StringField('Nombres', validators=[DataRequired(), validators.Length(max=15)])
     apellidos = StringField('Apellidos', validators=[DataRequired()])
     direccion = StringField('Direccion', validators=[DataRequired()])
     telefono = StringField('Numero Telefonico', validators=[DataRequired()])
