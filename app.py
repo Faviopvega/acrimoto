@@ -7,7 +7,7 @@ import bcrypt
 
 #Mis Archivos Importar
 from formulario import formLogin, formUsuarios
-from conexion import get_db
+from conexion import get_db, close_db
 
 app = Flask(__name__)
 app.secret_key = 'dafofndf9sadf'
@@ -57,15 +57,15 @@ def inicioSesion():
                 if bcrypt.checkpw(password_encode,password_encriptado_encode):
                     if user[7] == 1:
                         session["usuario"] = email 
-                        session["nivel"] = "administrador"
+                        session["nivel"] = "Super Administrador"
                         return redirect("/superadmin")
                     elif user[7] == 2:
                         session["usuario"] = email 
-                        session["nivel"] = "docente"
+                        session["nivel"] = "administrador"
                         return redirect("/admin")
                     elif user[7] == 3:
                         session["usuario"] = email 
-                        session["nivel"] = "estudiante"
+                        session["nivel"] = "Empleado"
                         return redirect("/colaborador")
             
             return render_template("login.html", form=form)
@@ -89,6 +89,10 @@ def admin():
 def colaborador():
     return render_template("empleado/main.html")
 
+@app.route('/logout', methods=['GET','POST'])
+def logout():
+    session.close()
+    return render_template("/")
 
 #Rutas -------- Control Formularios
 @app.route('/registrarusuarios', methods=['GET', 'POST'])
