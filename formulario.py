@@ -15,7 +15,7 @@ class formUsuarios(Form):
     direccion = StringField('Direccion', validators=[DataRequired()])
     telefono = StringField('Numero Telefonico', validators=[DataRequired()])
     correo = EmailField("Correo electronico", validators=[DataRequired()])
-    contrasenia = StringField('Contraseña', validators=[DataRequired()])
+    contrasenia = PasswordField('Contraseña', validators=[DataRequired()])
     tipoUsuario = SelectField("Tipo Usuario ", validators=[DataRequired()])
     registrar = SubmitField("Registrar Usuario")
 
